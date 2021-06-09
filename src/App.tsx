@@ -23,7 +23,6 @@ function App() {
   const produceItems = async () => {
     dispatch({
       type: ACTION_START,
-      payload: null
     })
     // I DONT USE PROPS OR CONST FOR FOLLOWING ARGUMENTS CAUSE IT IS ROOT COMPONENT OF THIS APP
     // THE TASK IS REFACTORING - NOT OPTIMIZATION OR REWRITING
