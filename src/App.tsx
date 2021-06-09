@@ -7,33 +7,33 @@ function App() {
     // d - List of items that can be updated with new additional items when the button is pressed
     var [d, set] = React.useState()
 
-    var fill = () => {
-        // The function fills the list for render with some items
-
-        [...Array(20)].forEach((_, index) => {
-            if (!Array.isArray(d)) {
-                // @ts-ignore
-                d = []
-            }
-
-            // @ts-ignore
-            d.push({
-                id: index, title: (function () {
-                    var result = [];
-                    for (var i = 0; i < 10; i++) {
-                        result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-                            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-                    }
-                    var string = result.join('');
-                    return string
-                })()
-            })
-        })
-        set(d)
-    }
-
-    // Fills the List onmount
-    fill()
+    // var fill = () => {
+    //     // The function fills the list for render with some items
+    //
+    //     [...Array(20)].forEach((_, index) => {
+    //         if (!Array.isArray(d)) {
+    //             // @ts-ignore
+    //             d = []
+    //         }
+    //
+    //         // @ts-ignore
+    //         d.push({
+    //             id: index, title: (function () {
+    //                 var result = [];
+    //                 for (var i = 0; i < 10; i++) {
+    //                     result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
+    //                         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
+    //                 }
+    //                 var string = result.join('');
+    //                 return string
+    //             })()
+    //         })
+    //     })
+    //     set(d)
+    // }
+    //
+    // // Fills the List onmount
+    // fill()
 
     var render = () => {
         // renders the list of items as components
