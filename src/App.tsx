@@ -1,54 +1,29 @@
-import React from 'react'
+import React, {useReducer, useEffect} from 'react'
 import logo from './logo.svg'
 import './App.css'
+import {reducer, defaultState, ACTION_START, ACTION_DONE} from './appState'
+import {useListDataGenerator, defaultTitleGeneratorFactory} from './hooks/dataGeneration'
+import {IListItem} from './domain/IListItem'
+import {List} from './components/List'
 
+const itemFactory = (str: string): IListItem => ({id: str, title: str})
 
 function App() {
-  // d - List of items that can be updated with new additional items when the button is pressed
-  var [d, set] = React.useState()
+  const [state, dispatch] = useReducer(reducer, defaultState)
 
-  // var fill = () => {
-  //     // The function fills the list for render with some items
-  //
-  //     [...Array(20)].forEach((_, index) => {
-  //         if (!Array.isArray(d)) {
-  //             // @ts-ignore
-  //             d = []
-  //         }
-  //
-  //         // @ts-ignore
-  //         d.push({
-  //             id: index, title: (function () {
-  //                 var result = [];
-  //                 for (var i = 0; i < 10; i++) {
-  //                     result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-  //                         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-  //                 }
-  //                 var string = result.join('');
-  //                 return string
-  //             })()
-  //         })
-  //     })
-  //     set(d)
-  // }
-  //
-  // // Fills the List onmount
-  // fill()
-
-  var render = () => {
-    // renders the list of items as components
-
-    if (!Array.isArray(d)) {
-      // @ts-ignore
-      d = []
-    }
-    var result: any = []
-    // @ts-ignore
-    d.forEach(function (i, index) {
-      result.push(<div className={'App-item'}>{'Title is:' + i.title + '!'}</div>)
-    })
-    return result
-  }
+  const generateData = useListDataGenerator<IListItem>(defaultTitleGeneratorFactory, itemFactory)
+  useEffect(() => {
+    (async () => {
+      dispatch({
+        type: ACTION_START
+      })
+      const list: IListItem[] = await generateData(2, 10)
+      dispatch({
+        type: ACTION_DONE,
+        payload: list
+      })
+    })()
+  }, [])
 
   return (
     <div className="App">
@@ -61,7 +36,11 @@ function App() {
         </button>
       </div>
       <div>
-        {render()}
+        {/* list of items */}
+        <List items={state.items}/>
+
+        {/* indicate new elements are coming */}
+        {state.isLoading && (<div>Some elements are generating....</div>)}
       </div>
     </div>
   )
