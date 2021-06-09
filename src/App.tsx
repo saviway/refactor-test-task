@@ -6,24 +6,43 @@ import {useListDataGenerator, defaultTitleGeneratorFactory} from './hooks/dataGe
 import {IListItem} from './domain/IListItem'
 import {List} from './components/List'
 
+/**
+ * Creates a single IListItem by given title
+ * @param str {string}
+ * @return {IListItem}
+ */
 const itemFactory = (str: string): IListItem => ({id: str, title: str})
 
 function App() {
   const [state, dispatch] = useReducer(reducer, defaultState)
-
   const generateData = useListDataGenerator<IListItem>(defaultTitleGeneratorFactory, itemFactory)
+
+  /**
+   * Produce a new set of Items.
+   */
+  const produceItems = async () => {
+    dispatch({
+      type: ACTION_START,
+      payload: null
+    })
+    // I DONT USE PROPS OR CONST FOR FOLLOWING ARGUMENTS CAUSE IT IS ROOT COMPONENT OF THIS APP
+    // THE TASK IS REFACTORING - NOT OPTIMIZATION OR REWRITING
+    const data: IListItem[] = await generateData(20, 10)
+    dispatch({
+      type: ACTION_DONE,
+      payload: data
+    })
+  }
+
+  /**
+   * Effect to emulate componentDidMount
+   */
   useEffect(() => {
+    // I use IIFE to avoid "Unhandled promise rejection" warning
     (async () => {
-      dispatch({
-        type: ACTION_START
-      })
-      const list: IListItem[] = await generateData(2, 10)
-      dispatch({
-        type: ACTION_DONE,
-        payload: list
-      })
+      await produceItems()
     })()
-  }, [])
+  }, []) // need @eslintignore to avoid warning for missing dependencies
 
   return (
     <div className="App">
@@ -31,7 +50,7 @@ function App() {
         <img src={logo} className="App-logo" alt="logo"/>
       </div>
       <div>
-        <button className="App-button">
+        <button className="App-button" onClick={produceItems}>
           Add More
         </button>
       </div>
