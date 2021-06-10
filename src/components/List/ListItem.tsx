@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { IListItem } from '../../domain/IListItem'
+import {IListSharedProps} from './List'
 
 /**
  * Describes ListItem props
@@ -12,19 +13,22 @@ export interface IListItemProps {
   item: IListItem
 }
 
+const fallbackFormat = (t: string): string => t
+
 /**
  * Renders single list item
- * @param props {IListItemProps}
+ * @param props {IListItemProps & IListSharedProps}
  * @constructor
  */
-export function ListItem(props: IListItemProps): JSX.Element {
-  const { item } = props
-  return <div className="App-item">{item.title}</div>
+export function ListItem(props: IListItemProps & IListSharedProps): JSX.Element {
+  const { item, titleFormat } = props
+  const formatFn = titleFormat ? titleFormat : fallbackFormat
+  return <div className="App-item">{formatFn(item.title)}</div>
 }
 
 /**
  * Optimized ListItem component with React.memo.
  */
-export const ListItemMemoized = memo<IListItemProps>(
+export const ListItemMemoized = memo<IListItemProps & IListSharedProps>(
   ListItem,
   (prevProps, nextProps) => prevProps.item.title === nextProps.item.title)

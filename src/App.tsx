@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from 'react'
+import React, {useReducer, useEffect, useCallback} from 'react'
 import logo from './logo.svg'
 import './App.css'
 import {reducer, defaultState, ACTION_START, ACTION_DONE} from './appState'
@@ -43,6 +43,11 @@ function App() {
     })()
   }, []) // need @eslintignore to avoid warning for missing dependencies
 
+  /**
+   * Format title string (memoized)
+   */
+  const titleFormatter = useCallback((title: string) => `Title is:${title}!`, [])
+
   return (
     <div className="App">
       <div className="App-header">
@@ -55,7 +60,7 @@ function App() {
       </div>
       <div>
         {/* list of items */}
-        <List items={state.items}/>
+        <List items={state.items} titleFormat={titleFormatter}/>
 
         {/* indicate new elements are coming */}
         {state.isLoading && (<div>Some elements are generating....</div>)}
